@@ -31,6 +31,19 @@
                     <compilerArgument></compilerArgument>
                 </configuration>
             </plugin>
+            <plugin>
+              <artifactId>maven-assembly-plugin</artifactId>
+      <configuration>
+        <archive>
+          <manifest>
+            <mainClass>fully.qualified.MainClass</mainClass>
+          </manifest>
+        </archive>
+        <descriptorRefs>
+          <descriptorRef>jar-with-dependencies</descriptorRef>
+        </descriptorRefs>
+      </configuration>
+    </plugin>
         </plugins>
     </pluginManagement>
   </build>
@@ -50,6 +63,12 @@
 
   </developers>
   <dependencies>
+    <dependency>
+      <groupId>it.unimi.dsi</groupId>
+      <artifactId>law-library</artifactId>
+      <version>2.6.0</version>
+      <scope>compile</scope>
+    </dependency>
     <dependency>
       <groupId>it.unimi.dsi</groupId>
       <artifactId>fastutil</artifactId>
