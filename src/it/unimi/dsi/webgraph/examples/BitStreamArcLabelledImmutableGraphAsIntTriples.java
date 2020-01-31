@@ -84,6 +84,9 @@ public class BitStreamArcLabelledImmutableGraphAsIntTriples {
 		long arcIncCntAF[] = new long[11];
 		long arcDecCntAF[] = new long[11];
 
+		long arc01, arc10, arc010, arcOthers;
+		arc01 = arc10 = arc010 = arcOthers = 0;
+
 		int nodeIncCntAL[] = new int[11];
 		int nodeDecCntAL[] = new int[11];
 		int nodeIncCntAF[] = new int[11];
@@ -110,6 +113,23 @@ public class BitStreamArcLabelledImmutableGraphAsIntTriples {
 				nodeLabel = nodeLabel | arcLabel;
 				firstBit = prevBit = arcLabel & 1;
 				if ( firstBit != 0 ) { arcCnt[0]++; }
+
+				if ( arcLabel != 0 ) {
+					int lastBit = arcLabel & (1 << 11);
+					int highestBitOfst = 31 - Integer.numberOfLeadingZeros(arcLabel);
+					int lowestBitOfst = Integer.numberOfTrailingZeros(arcLabel);
+					int bitNumInBetween = highestBitOfst - lowestBitOfst + 1;
+					if (bitNumInBetween == Integer.bitCount(arcLabel)) {
+						if (firstBit == 0 && lastBit == 0) {
+							arc010++;
+						} else if (firstBit == 0) {
+							arc01++;
+						} else if (lastBit == 0) {
+							arc10++;
+						}
+					} else { arcOthers++; }
+				}
+
 				for ( int i = 1; i < 12; i++ ) {
 					int bit = (arcLabel >> i) & 1;
 					if ( bit != 0 ) {
@@ -177,6 +197,9 @@ public class BitStreamArcLabelledImmutableGraphAsIntTriples {
 			                   Integer.toString(nodeIncCntAL[k - 1]) + " |V-|: " + Integer.toString(nodeDecCntAL[k - 1]) +
 			                   " |E+|: " + Long.toString(arcIncCntAL[k - 1]) + " |E-|: " + Long.toString(arcDecCntAL[k - 1]) );
 		}
-
+		System.out.println("Edges of bits 1*0*: " + Long.toString(arc10));
+		System.out.println("Edges of bits 0*1*: " + Long.toString(arc01));
+		System.out.println("Edges of bits 0*1*0*: " + Long.toString(arc010));
+		System.out.println("Edges of other bits: " + Long.toString(arcOthers));
 	}
 }
